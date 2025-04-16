@@ -207,6 +207,14 @@ class ReplayBuffer:
             self._idx = (self._idx + 1) % self._max_episodes
             self._full = self._full or self._idx == 0
 
+        # set episode_lengths
+        self._episodes_length = np.array([len(array) - 1 for array in self._storage["discount"]], dtype=np.int32)
+        self._episodes_length[len(self):] = 0
+        assert self._episodes_length[:len(self)].min() == self._episodes_length[:len(self)].max()
+        self._episodes_selection_probability = None
+        self._is_fixed_episode_length = True
+        self._max_episode_length = None
+
     def relabel(self, custom_reward) -> None:
 
         for (ep_idx, phy) in tqdm(enumerate(self._storage["physics"])):
