@@ -33,7 +33,7 @@ _install () {
     conda activate "$1"  # just to be sure
   fi
   which pip
-  pip install  --progress-bar off -U pip wheel
+  pip install  --progress-bar off -U pip==24.0 wheel
   pip install  --progress-bar off -r requirements.txt
   # required? unclear
   # conda install -c anaconda patchelf
