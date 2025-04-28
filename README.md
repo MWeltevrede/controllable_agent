@@ -54,7 +54,7 @@ with Path("walker/rnd/replay.pt").open('wb') as f:
 ```
 #!/bin/bash
 
-python -m url_benchmark.train_offline use_wandb=True agent=fb_ddpg task=walker_walker load_replay_buffer=<location-of-replay.pt>
+python -m url_benchmark.train_offline use_wandb=True agent=fb_ddpg task=walker_walker load_replay_buffer=<location-of-replay.pt> discount=0.98 agent.backward_hidden_dim=256 agent.q_loss=True agent.q_loss_coef=0.02 agent.num_inference_steps=10000
 ```
 
 And running it with 
