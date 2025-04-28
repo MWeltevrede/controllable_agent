@@ -62,6 +62,8 @@ And running it with
 apptainer exec --nv --bind <your-bash-script>:/command.sh:ro fb.sif bash /command.sh
 ```
 
+The feat/large_networks branch increases the network depths by an additional layer, so that it corresponds with what is described in the paper. This together with the non-default hyperparameters specified in the command above still can't reproduce the performance from the paper though (at least not on RND buffer, cheetah_walk_backward).
+
 ###### Using hiplot for Monitoring Training Instead of WandB
 From your device containing the logs, run the following command from the root folder: \
 `python -m hiplot url_benchmark.hiplogs.load --port=XXXX`
