@@ -88,8 +88,8 @@ class Actor(nn.Module):
         self.preprocess = preprocess
 
         if self.preprocess:
-            self.obs_net = mlp(self.obs_dim, hidden_dim, "ntanh", feature_dim, "irelu")
-            self.obs_z_net = mlp(self.obs_dim + self.z_dim, hidden_dim, "ntanh", feature_dim, "irelu")
+            self.obs_net = mlp(self.obs_dim, hidden_dim, "ntanh", hidden_dim, "irelu", feature_dim, "irelu")
+            self.obs_z_net = mlp(self.obs_dim + self.z_dim, hidden_dim, "ntanh", hidden_dim, "irelu", feature_dim, "irelu")
             if not add_trunk:
                 self.trunk: nn.Module = nn.Identity()
                 feature_dim = 2 * feature_dim
@@ -102,7 +102,7 @@ class Actor(nn.Module):
                              hidden_dim, "irelu")
             feature_dim = hidden_dim
 
-        self.policy = mlp(feature_dim, hidden_dim, "irelu", self.action_dim)
+        self.policy = mlp(feature_dim, hidden_dim, "irelu", hidden_dim, "irelu", self.action_dim)
         self.apply(utils.weight_init)
         # initialize the last layer by zero
         # self.policy[-1].weight.data.fill_(0.0)
@@ -163,8 +163,8 @@ class ForwardMap(nn.Module):
         self.preprocess = preprocess
 
         if self.preprocess:
-            self.obs_action_net = mlp(self.obs_dim + self.action_dim, hidden_dim, "ntanh", feature_dim, "irelu")
-            self.obs_z_net = mlp(self.obs_dim + self.z_dim, hidden_dim, "ntanh", feature_dim, "irelu")
+            self.obs_action_net = mlp(self.obs_dim + self.action_dim, hidden_dim, "ntanh", hidden_dim, "irelu", feature_dim, "irelu")
+            self.obs_z_net = mlp(self.obs_dim + self.z_dim, hidden_dim, "ntanh", hidden_dim, "irelu", feature_dim, "irelu")
             if not add_trunk:
                 self.trunk: nn.Module = nn.Identity()
                 feature_dim = 2 * feature_dim
@@ -177,7 +177,7 @@ class ForwardMap(nn.Module):
                              hidden_dim, "irelu")
             feature_dim = hidden_dim
 
-        seq = [feature_dim, hidden_dim, "irelu", self.z_dim]
+        seq = [feature_dim, hidden_dim, "irelu", hidden_dim, "irelu", self.z_dim]
         self.F1 = mlp(*seq)
         self.F2 = mlp(*seq)
 
@@ -217,7 +217,7 @@ class BackwardMap(nn.Module):
         self.z_dim = z_dim
         self.norm_z = norm_z
 
-        self.B = mlp(self.obs_dim, hidden_dim, "ntanh", hidden_dim, "relu", self.z_dim)
+        self.B = mlp(self.obs_dim, hidden_dim, "ntanh", hidden_dim, "relu", hidden_dim, "relu", self.z_dim)
         self.apply(utils.weight_init)
 
     def forward(self, obs):
